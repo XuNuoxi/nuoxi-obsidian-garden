@@ -19,6 +19,7 @@ export function htmlToJsx(fp: FilePath, tree: Node) {
       jsx: jsx as Jsx,
       jsxs: jsxs as Jsx,
       elementAttributeNameCase: "html",
+      ignoreInvalidStyle: true,
       components: customComponents,
     })
   } catch (e) {
