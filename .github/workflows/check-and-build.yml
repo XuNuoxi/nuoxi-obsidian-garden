@@ -8,6 +8,12 @@ on:
 jobs:
   trigger:
     runs-on: ubuntu-22.04
+    
+    # ⭐ 关键修复：赋予触发其他工作流的权限
+    permissions:
+      contents: read       # 为了 checkout 和 git ls-remote
+      actions: write       # 为了 gh workflow run 能够调用 API
+
     steps:
       - name: Checkout (to enable cache path)
         uses: actions/checkout@v4
