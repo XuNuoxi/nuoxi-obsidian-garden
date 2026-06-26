@@ -1,0 +1,35 @@
+name: Check Notes & Trigger Deploy
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'   # 每30分钟
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout (to enable cache path)
+        uses: actions/checkout@v4
+
+      - name: Get latest SHA of notes repo
+        id: get_sha
+        run: |
+          SHA=$(git ls-remote https://github.com/XuNuoXi-QAQ/ai-collab-dev-tutorial main | awk '{print $1}')
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
+          echo "Latest SHA: $SHA"
+
+      - name: Restore cached SHA
+        id: cache_sha
+        uses: actions/cache@v4
+        with:
+          path: .notes-sha
+          key: notes-sha-${{ steps.get_sha.outputs.sha }}
+
+      - name: Trigger deploy.yml if SHA changed
+        if: steps.cache_sha.outputs.cache-hit != 'true'
+        run: |
+          echo "🔄 Notes changed, triggering deploy workflow..."
+          gh workflow run deploy.yml --ref main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
