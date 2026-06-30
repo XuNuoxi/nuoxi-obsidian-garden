@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout (to enable cache path)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Get latest SHA of notes repo
         id: get_sha
@@ -27,7 +27,7 @@ jobs:
 
       - name: Restore cached SHA
         id: cache_sha
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .notes-sha
           key: notes-sha-${{ steps.get_sha.outputs.sha }}
